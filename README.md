@@ -91,9 +91,7 @@ I filtered for **EventID 4624 (An account successfully logged on)** and was alar
 
 A query to summarize the successful logins by IP and Account revealed the "smoking gun":
 
-- **Attacker IP `76.32.236.137`**
-    
-- **Account `CORP-NET-WEST-2\abuser`**
+- **Attacker IP `**.**.236.137`**
     
 - **Successful Logins: 26**
     
