@@ -1,7 +1,7 @@
 ![VmAttackMap](/images/Windows%20VM%20Attack%20Map.png)
 
 # Azure-Sentinel-Honeypot
-I built a honeypot in Azure and it was compromised 1,750 times in 72 hours. Here's what I found.
+I built a honeypot in Azure. Within 72 hours, it received over 28,000 brute-force attacks. Here's what I found.
 
 # SOC Analyst Exercise: Building an Azure Honeypot (Part 1: Detection & Analysis)
 
@@ -16,7 +16,7 @@ The goal was twofold:
 2. **Integrate** the asset with a modern SIEM (Microsoft Sentinel) to ingest, analyze, and visualize the resulting security events, following the **Detection and Analysis** phases of the NIST Incident Response framework.
     
 
-Within 72 hours, the machine was discovered and compromised by attackers thousands of times. This write-up details the project's architecture, the detection of the initial breach, and the triage of post-compromise activity.
+Within 72 hours, the machine was discovered and compromised by attackers 22 times. This write-up details the project's architecture, the detection of the initial breach, and the triage of post-compromise activity.
 
 
 
@@ -87,36 +87,30 @@ The map revealed a coordinated, global campaign, with the highest volume of atta
 
 **2. Finding the "Signal" - Successful Compromise** While the _failed_ logins were high-volume, the most critical finding was in the _successful_ logins.
 
-I filtered for **EventID 4624 (An account successfully logged on)** and was alarmed to find **1,750** successful, unauthorized logins. This means that while 28k+ attempts failed, attackers _did_ find valid credentials—or the RDP service was vulnerable.
+I filtered for **EventID 4624 (An account successfully logged on)** and was alarmed to find **22** successful, unauthorized logins. This means that while 28k+ attempts failed, attackers _did_ find valid credentials—or the RDP service was vulnerable.
 
 A query to summarize the successful logins by IP and Account revealed the "smoking gun":
 
-- **Attacker IP `**.**.***.137`**
+- **Attacker IP `218.205.64[.]41`**
     
-- **Successful Logins: 26**
+- **Successful Logins: 13**
 
 
 This immediately pivoted the investigation from "detection" to "incident response." The machine was not just being scanned; it was actively compromised. The next question was: _What did they do?_
 
 **3. Triage of Post-Compromise Activity** With a confirmed breach, I ran a broad triage query to hunt for common post-compromise TTPs, searching for events related to privilege escalation, process creation, and discovery.
 
-The results showed a 1,229 suspicious activities, confirming the attacker had moved laterally _after_ logging in. 
+The results showed a number of suspicious activities, confirming the attacker had moved laterally _after_ logging in. 
 
 ![Post-Compromise Triage Query](/images/Post%20Compromise%20Triage%20Query.png)
 
 Key findings from this query include:
 
-- **EventID 4672 (Privilege Escalation):** "Special privileges assigned to new logon."
-    
-- **EventID 4688 (Execution):** "A new process has been created."
     
 - **EventID 4798 (Discovery):** "A user's local group membership was enumerated."
     
 - **EventID 4799 (Discovery):** "A security-enabled local group membership was enumerated."
-    
-- **EventID 5058 & 5061 (Credential Access/Defense Evasion):** Cryptographic and key file operations.
-
-   
+     
 
 ## Conclusion & Next Steps (Part 1)
 
@@ -124,4 +118,4 @@ This project successfully demonstrated the ability to rapidly deploy cloud infra
 
 We've established that our asset is not only under attack but is _actively compromised_. We have identified the source of the attacks, visualized the global threat, and—most importantly—isolated the activity of a specific, persistent attacker.
 
-This concludes Part 1: Detection and Analysis. **Part 2 of this analysis** will move deeper into the Incident Response (IR) cycle, focusing on a deep-dive investigation of the 1,229 suspicious activities to trace the exact actions taken by the `abuser` account and map their TTPs to the MITRE ATT&CK framework.
+This concludes Part 1: Detection and Analysis. **Part 2 of this analysis** will move deeper into the Incident Response (IR) cycle, focusing on a deep-dive investigation of the 1,229 suspicious activities to trace the exact actions taken by the `unauthorized` account and map their TTPs to the MITRE ATT&CK framework.
