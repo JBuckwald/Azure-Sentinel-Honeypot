@@ -18,7 +18,9 @@ The goal was twofold:
 
 Within 72 hours, the machine was discovered and compromised by attackers thousands of times. This write-up details the project's architecture, the detection of the initial breach, and the triage of post-compromise activity.
 
-### Phase 1: Building the "Victim" - Cloud Infrastructure
+
+
+## Phase 1: Building the "Victim" - Cloud Infrastructure
 
 The entire project was built using an Infrastructure as a Service (IaaS) model in Microsoft Azure, ensuring complete isolation from any production or personal networks.
 
@@ -35,24 +37,34 @@ The architecture was organized logically:
 - **SIEM:** Microsoft Sentinel (To analyze logs)
     
 
-Here is a visualization of the resource group and its components: ![Azure Resource Map](/images/Honeypot%20Diagram.png)
+Here is a visualization of the resource group and its components:
+
+![Azure Resource Map](/images/Honeypot%20Diagram.png)
 
 To make the honeypot an attractive target, I implemented two key misconfigurations:
 
-1. **Network Security Group (NSG):** I created an inbound rule named `DANGER_AllowAnyCustomInbound` that allows all traffic, from any source IP and any port, to the VM. ![NSG "Allow Any" Rule](/images/Danger%20NSG.png)
+1. **Network Security Group (NSG):** I created an inbound rule named `DANGER_AllowAnyCustomInbound` that allows all traffic, from any source IP and any port, to the VM. 
+
+![NSG "Allow Any" Rule](/images/Danger%20NSG.png)
     
-2. **Host-Based Firewall:** I RDP'd into the new VM and manually disabled the Windows Defender Firewall for all profiles (Domain, Private, and Public), ensuring the machine was fully exposed. ![Windows Firewall Disabled](/images/Firewalls%20Off.png)
+2. **Host-Based Firewall:** I RDP'd into the new VM and manually disabled the Windows Defender Firewall for all profiles (Domain, Private, and Public), ensuring the machine was fully exposed. 
+
+![Windows Firewall Disabled](/images/Firewalls%20Off.png)
     
 
 With the defenses down, the honeypot was live and ready.
 
-### Phase 2: Connecting the Watchtower (SIEM)
+
+
+## Phase 2: Connecting the Watchtower (SIEM)
 
 A vulnerable VM is useless without a way to record what happens to it. I connected the `CORP-WEST-2` VM to the `LOW-Soc-Lab` Log Analytics Workspace and enabled Microsoft Sentinel. This piped all Windows Security Events from the VM directly into the SIEM in real-time.
 
 It didn't take long for attackers to find the machine. Within 72 hours, an initial query for **EventID 4625 (An account failed to log on)** showed a staggering **28,584** failed login attempts.
 
-### Phase 3: Triage and Analysis
+
+
+## Phase 3: Triage and Analysis
 
 The 28,584 failed logins were just the "noise" of automated, internet-wide scanners. The real investigation began by enriching this data.
 
@@ -92,7 +104,9 @@ This immediately pivoted the investigation from "detection" to "incident respons
 
 **3. Triage of Post-Compromise Activity** With a confirmed breach, I ran a broad triage query to hunt for common post-compromise TTPs, searching for events related to privilege escalation, process creation, and discovery.
 
-The results showed a 1,229 suspicious activities, confirming the attacker had moved laterally _after_ logging in. ![Post-Compromise Triage Query](/images/Post%20Compromise%20Triage%20Query.png)
+The results showed a 1,229 suspicious activities, confirming the attacker had moved laterally _after_ logging in. 
+
+![Post-Compromise Triage Query](/images/Post%20Compromise%20Triage%20Query.png)
 
 Key findings from this query include:
 
@@ -105,9 +119,10 @@ Key findings from this query include:
 - **EventID 4799 (Discovery):** "A security-enabled local group membership was enumerated."
     
 - **EventID 5058 & 5061 (Credential Access/Defense Evasion):** Cryptographic and key file operations.
-    
 
-### Conclusion & Next Steps (Part 1)
+   
+
+## Conclusion & Next Steps (Part 1)
 
 This project successfully demonstrated the ability to rapidly deploy cloud infrastructure, configure data ingestion into a SIEM, and perform the initial stages of incident analysis.
 
