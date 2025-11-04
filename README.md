@@ -91,12 +91,10 @@ I filtered for **EventID 4624 (An account successfully logged on)** and was alar
 
 A query to summarize the successful logins by IP and Account revealed the "smoking gun":
 
-- **Attacker IP `**.**.236.137`**
+- **Attacker IP `**.**.***.137`**
     
 - **Successful Logins: 26**
-    
 
-![Top Successful Logons Query](/images/Top%20Successful%20Logons.png)
 
 This immediately pivoted the investigation from "detection" to "incident response." The machine was not just being scanned; it was actively compromised. The next question was: _What did they do?_
 
