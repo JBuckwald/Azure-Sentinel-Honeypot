@@ -1,0 +1,9 @@
+// KQL Query to summarize successful logons (EventID 4624)
+// This helps identify which accounts and IPs are being used by attackers.
+SecurityEvent
+| where EventID == "4624"
+
+// Filter for remote network logons and exclude local/system accounts
+| where AccountType == "User" and LogonType == 3
+| summarize count() by IpAddress, Account
+| order by count_ desc

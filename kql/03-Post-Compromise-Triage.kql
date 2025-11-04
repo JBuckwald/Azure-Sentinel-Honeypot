@@ -1,0 +1,23 @@
+// Post-Compromise Triage Query
+// Hunts for a wide range of suspicious Event IDs indicating activity *after* a successful logon.
+// This query maps to TTPs from the MITRE ATT&CK framework.
+SecurityEvent
+| where EventID in (
+    "4624", // An account successfully logged on
+    "4672", // Special privileges assigned to new logon (Privilege Escalation)
+    "4688", // A new process has been created (Execution)
+    "4696", // A primary token was assigned to process
+    "4798", // A user's local group membership was enumerated (Discovery)
+    "4799", // A security-enabled local group membership was enumerated (Discovery)
+    "4826", // Boot Configuration Data loaded (Persistence/Defense Evasion)
+    "4902", // The Per-user audit policy table was created
+    "4907", // Auditing settings on object were changed (Defense Evasion)
+    "5058", // Key file operation (Credential Access)
+    "5059", // Key migration operation
+    "5061", // Cryptographic operation (Defense Evasion)
+    "6417" // The FIPS mode crypto selftests succeeded
+    )
+
+// Projecting the most relevant columns for triage
+| project TimeGenerated, EventID, Activity, Account, Computer, SubjectUserName, NewProcessName, ProcessName
+| order by TimeGenerated desc

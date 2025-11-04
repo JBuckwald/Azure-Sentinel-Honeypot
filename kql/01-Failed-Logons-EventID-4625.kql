@@ -1,0 +1,7 @@
+// KQL Query to detect a high volume of failed logon attempts (EventID 4625)
+// This is often an indicator of a brute-force or password-spraying attack.
+SecurityEvent
+| where EventID == "4625"
+| where TimeGenerated > ago(72h)
+| project TimeGenerated, EventID, Activity, Account, AccountType, Computer, IpAddress
+| order by TimeGenerated desc
