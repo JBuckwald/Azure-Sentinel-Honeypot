@@ -1,0 +1,8 @@
+// KQL Validation Query 1: Confirm 'ANONYMOUS LOGON' successes are now zero.
+// This query is run ~24 hours *after* the remediation (Local Security Policy)
+// to validate the fix. A result of "0" confirms success.
+SecurityEvent
+| where TimeGenerated > ago(24h)
+| where EventID == "4624" // Successful logon
+| where SubjectUserName == "ANONYMOUS LOGON"
+| count

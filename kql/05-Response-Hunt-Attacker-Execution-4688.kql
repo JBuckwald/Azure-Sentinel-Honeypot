@@ -1,0 +1,7 @@
+// KQL Query to hunt for Execution TTPs (MITRE T1059)
+// This query scopes the *real* attacker's (218.205.64[.]41) activity.
+// Finding "0 results" proved the attacker did not execute commands.
+SecurityEvent
+| where IpAddress == "218.205.64[.]41"
+| where EventID == "4688" // A new process has been created
+| project TimeGenerated, NewProcessName, ProcessName, SubjectUserName

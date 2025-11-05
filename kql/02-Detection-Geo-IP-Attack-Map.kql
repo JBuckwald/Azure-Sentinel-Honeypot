@@ -1,15 +1,12 @@
 // KQL Query to join SecurityEvents with a Geo-IP Watchlist
-// This enriches failed logon data with geographic locations for visualization.
-// 1. Define the watchlist name
+// This enriches failed logon data (EventID 4625) with geographic locations
 let GeoIP_Map = _GetWatchlist('geoip');
-
-// 2. Join failed logons with the map
 SecurityEvent
 | where EventID == "4625"
 | order by TimeGenerated desc
 
-// 3. Perform the lookup
+// Perform the lookup
 | evaluate ipv4_lookup(GeoIP_Map, IpAddress, network)
 
-// 4. Project the columns needed for the map
+// Project the columns needed for the map
 | project TimeGenerated, Computer, AttackerIP = IpAddress, cityname, countryname, latitude, longitude

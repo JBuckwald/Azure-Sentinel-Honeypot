@@ -1,5 +1,7 @@
 // KQL Query to summarize successful logons (EventID 4624)
-// This helps identify which accounts and IPs are being used by attackers.
+// This query is the main pivot point of the investigation.
+// It reveals our two primary leads: the 'labuser' (False Positive)
+// and 'ANONYMOUS LOGON' (The Real Threat).
 SecurityEvent
 | where EventID == "4624"
 

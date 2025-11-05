@@ -1,6 +1,7 @@
-// Post-Compromise Triage Query
-// Hunts for a wide range of suspicious Event IDs indicating activity *after* a successful logon.
-// This query maps to TTPs from the MITRE ATT&CK framework.
+// KQL Query to hunt for a wide range of post-compromise TTPs.
+// This was initially run to investigate the 'labuser' lead.
+// The "alarming" results (4672, 4688) were triaged as benign
+// administrative activity, confirming 'labuser' as a False Positive.
 SecurityEvent
 | where EventID in (
     "4624", // An account successfully logged on
@@ -17,7 +18,5 @@ SecurityEvent
     "5061", // Cryptographic operation (Defense Evasion)
     "6417" // The FIPS mode crypto selftests succeeded
     )
-
-// Projecting the most relevant columns for triage
 | project TimeGenerated, EventID, Activity, Account, Computer, SubjectUserName, NewProcessName, ProcessName
 | order by TimeGenerated desc

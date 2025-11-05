@@ -1,0 +1,7 @@
+// KQL Query to hunt for Discovery TTPs (MITRE T1087)
+// This query scopes the *real* attacker's (218.205.64[.]41) activity.
+// Finding "0 results" proved the attacker did not enumerate users or groups.
+SecurityEvent
+| where IpAddress == "218.205.64[.]41"
+| where EventID in ("4798", "4799") // Group Enumeration
+| project TimeGenerated, EventID, Activity, SubjectUserName

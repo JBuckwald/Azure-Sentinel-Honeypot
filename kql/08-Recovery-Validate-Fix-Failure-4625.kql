@@ -1,0 +1,10 @@
+// KQL Validation Query 2: Confirm 'ANONYMOUS LOGON' is now correctly *failing*.
+// This query is run ~24 hours *after* the remediation.
+// Seeing new '4625' events for 'ANONYMOUS LOGON' proves the
+// vulnerability is closed and scanners are being rejected.
+SecurityEvent
+| where TimeGenerated > ago(24h)
+| where EventID == "4625" // Failed logon
+| where SubjectUserName == "ANONYMOUS LOGON"
+| summarize count() by IpAddress, Activity
+| order by count_ desc
