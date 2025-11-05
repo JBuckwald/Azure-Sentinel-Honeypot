@@ -1,6 +1,6 @@
 ![VmAttackMap](/images/Windows%20VM%20Attack%20Map.png)
 
-# Anatomy of a Honeypot: A 28,000-Attack Investigation Guided by NIST SP 800-61r3
+# Triaging 28,000 Alerts: A SOC Case Study in Azure Sentinel Guided by NIST SP 800-61r3
 
 In cybersecurity, theory is one thing—practice is another. To bridge this gap, I built a live, intentionally vulnerable Windows 11 VM in Microsoft Azure. My goal was to observe real-world attacker techniques, tactics, and procedures (TTPs) in a controlled environment.
 
@@ -52,7 +52,7 @@ This phase represents the core of the incident, following the `Detect -> Respond
 
 It didn't take long for attackers to find the exposed machine. The initial `Detection` came from a simple KQL query for **EventID 4625 (An account failed to log on)**.
 
-Within 72 hours, this query returned a staggering **28,584** failed login attempts.
+Within 72 hours, this query returned a staggering **28,834** failed login attempts.
 
 ![KQL query for EventID 4625](/images/kql-query-1.png)
 
